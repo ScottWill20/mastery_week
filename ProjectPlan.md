@@ -94,8 +94,6 @@ private BigDecimal total;
 
 getters and setters
 
-public BigDecimal getTotal()
-
 
 ## Annotations
 create resources folder in src/main
