@@ -1,6 +1,8 @@
 # Project Plan
 
-# Tasks
+## Tasks
 
-# Schedule
+## Schedule
+
+## Approach
 Don't Wreck My House project
