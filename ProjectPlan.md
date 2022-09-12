@@ -1,10 +1,58 @@
 # Project Plan
+## Architecture
 
-Start with Models - Location and Host are one and the same
- - Reservation model should work similar to Forage model, pulls data from both Guest and Host
-
-Next is Data Layer - Class and Interface for each model
- - DataException class to handle throwables
+```
+src
+├───main
+│   ├───java
+│   │   └───learn
+│   │       └───reserving
+│   │           │   App.java
+│   │           │
+│   │           ├───data
+│   │           │       DataException.java
+│   │           │       HostFileRepository.java
+│   │           │       HostRepository.java
+│   │           │       GuestFileRepository.java
+│   │           │       GuestRepository.java
+│   │           │       ReservationFileRepository.java
+│   │           │       ReservationRepository.java
+│   │           │
+│   │           ├───domain
+│   │           │       HostService.java
+│   │           │       GuestService.java
+│   │           │       ReservationService.java
+│   │           │       Response.java
+│   │           │       Result.java
+│   │           │
+│   │           ├───models
+│   │           │       Host.java
+│   │           │       Guest.java
+│   │           │       Reservation.java
+│   │           │
+│   │           └───ui
+│   │                   ConsoleIO.java
+│   │                   Controller.java
+│   │                   GenerateRequest.java
+│   │                   MainMenuOption.java (?)
+│   │                   View.java
+│   │
+│   └───resources
+└───test
+    └───java
+        └───learn
+            └───foraging
+                ├───data
+                │       HostFileRepositoryTest.java
+                │       HostRepositoryDouble.java
+                │       GuestFileRepositoryTest.java
+                │       GuestRepositoryDouble.java
+                │       ReservationFileRepositoryTest.java
+                │       ReservationRepositoryDouble.java
+                │
+                └───domain
+                        ReservationServiceTest.java
+```
 
 # Models
 ### Host
@@ -59,6 +107,7 @@ annotate as needed -
    - @Service
  - UI
    - @Component
+   - Controller constructor - @Autowired
  - App
    - @ComponentScan
    - @PropertySource("classpath:data.properties") - connects to resources folder
@@ -111,53 +160,6 @@ private final String directory
 - deserialize
 
 - ReservationRepository - Interface
-
-## Data Tests
-### GuestFileRepositoryTest
-SEED_FILE_PATH
-TEST_FILE_PATH
-private final GuestFileRepository repository
-
-@BeforeEach
-- setup()
-    - Paths seedPath
-    - Paths testPath
-    - Files.copy()
-
-@Test shouldFindAll
-@Test shouldFindByEmail
-
-
-### HostFileRepositoryTest
-SEED_FILE_PATH
-TEST_FILE_PATH
-
-@BeforeEach
-- setup()
-    - Paths seedPath
-    - Paths testPath
-    - Files.copy() 
-  
-@Test shouldFindAll
-@Test shouldFindByEmail
-
-### ReservationFileRepositoryTest
-SEED_FILE_PATH
-TEST_FILE_PATH
-
-@BeforeEach
-- setup()
-    - Paths seedPath
-    - Paths testPath
-    - Files.copy()
-
-@Test shouldFindById
-@Test shouldAdd
-@Test shouldUpdate
-@Test shouldNotUpdateUnknownId
-@Test shouldDelete
-@Test shouldNotDeleteUnknownId
-
 # Domain Layer
 ### HostService
 private final HostRepository repository;
@@ -185,15 +187,181 @@ private final ReservationRepository repository;
 
 public ReservationService()
 
-publicList<Reservation> findByEmail
+public List<Reservation> findByEmail,
+public Result<Reservation> add,
+public Result<Reservation> update,
+public Result<Reservation> delete
+
+private Result<Host> validate()
+
+### Response
+boolean isSuccess,
+List<String> getErrorMessage,
+void addErrorMessage
+
+### Result
+private T payload
+
+getter and setter
+
+## UI Layer
+
+### ConsoleIO
+
+Scanner,
+DateTimeFormatter
+
+rework print methods: print, println, printf
+
+readString,
+readRequiredString,
+readDouble,
+readInt (Range),
+readInt (readRequired),
+read LocalDate,
+readBigDecimal (Range),
+readBigDecimal (Invalid)
+
+might need readBoolean for y/n response
+
+### Controller
+
+reference all services
+reference View
+
+public Controller constructor
+
+run(),
+runMenu()
+ - Exit
+ - Read
+   - viewReservationsByHost
+ - Create
+   - makeReservation
+ - Update
+   - editReservation
+ - Delete
+   - CancelReservation
+
+// support methods
+- getHost
+- getGuest
+
+### MainMenuOption?
+ - consider making
+
+### View
+public int getMenuOption/MainMenuOption getMenuOption
+
+getReservations
+
+getDates
+- Start Date
+- End Date
+  - see getGenerateRequest in foraging
+
+getGuestEmail,
+getHostEmail,
+boolean getConfirm,
+enterToContinue?,
+displayHeader,
+displayException,
+displayHeader,
+displayStatus,
+displayStatus overloaded?,
 
 
+## Requirements
+### View Reservations for Host
+- [ ] Display all reservations for a host.
 
-## Tasks
+- [ ] The user may enter a value that uniquely identifies a host or they can search for a host and pick one out of a list.
+- [ ] If the host is not found, display a message.
+- [ ] If the host has no reservations, display a message.
+- [ ] Show all reservations for that host.
+- [ ] Show useful information for each reservation: the guest, dates, totals, etc.
+- [ ] Sort reservations in a meaningful way.
 
-## Schedule
+### Make a Reservation
+- [ ] Books accommodations for a guest at a host.
 
-## Approach
+- [ ] The user may enter a value that uniquely identifies a guest or they can search for a guest and pick one out of a list.
+- [ ] The user may enter a value that uniquely identifies a host or they can search for a host and pick one out of a list.
+- [ ] Show all future reservations for that host so the administrator can choose available dates.
+- [ ] Enter a start and end date for the reservation.
+- [ ] Calculate the total, display a summary, and ask the user to confirm. The reservation total is based on the host's standard rate and weekend rate. For each day in the reservation, determine if it is a weekday (Sunday, Monday, Tuesday, Wednesday, or Thursday) or a weekend (Friday or Saturday). If it's a weekday, the standard rate applies. If it's a weekend, the weekend rate applies.
+- [ ] On confirmation, save the reservation.
+
+#### Validation
+
+- [ ] Guest, host, and start and end dates are required.
+- [ ] The guest and host must already exist in the "database". Guests and hosts cannot be created.
+- [ ] The start date must come before the end date.
+- [ ] The reservation may never overlap existing reservation dates.
+- [ ] The start date must be in the future.
+
+### Edit a Reservation
+- [ ] Edits an existing reservation.
+
+- [ ] Find a reservation.
+- [ ] Start and end date can be edited. No other data can be edited.
+- [ ] Recalculate the total, display a summary, and ask the user to confirm.
+
+#### Validation
+
+- [ ] Guest, host, and start and end dates are required.
+- [ ] The guest and host must already exist in the "database". Guests and hosts cannot be created.
+- [ ] The start date must come before the end date.
+- [ ] The reservation may never overlap existing reservation dates.
+
+### Cancel a Reservation
+- [ ] Cancel a future reservation.
+
+- [ ] Find a reservation.
+- [ ] Only future reservations are shown.
+- [ ] On success, display a message.
+
+#### Validation
+
+- [ ] You cannot cancel a reservation that's in the past.
+
+
+## Tasks & Schedule
+- [ ] Create directory structure - 15 min
+- [ ] Create classes and interfaces - 30 min
+- [ ] wiring with annotations - 30 min
+  - [ ] create resources folder
+  - [ ] create data.properties file, create filePaths
+  - [ ] wire up all classes with filePaths
+- [ ] Models
+  - [ ] Host - 15 min
+  - [ ] Guest - 15 min
+  - [ ] Reservation - 45 min
+- [ ] Data Layer
+  - [ ] HostFileRepo - 1 hr
+  - [ ] GuestFileRepo - 1 hr
+  - [ ] ReservationFileRepo - 2 hr
+  - [ ] ensure all interfaces contain necessary methods - 30 min
+  - [ ] Test Domain Layer - at least 1 hr
+- [ ] Domain Layer
+  - [ ] HostService - 1 hr
+  - [ ] GuestService - 1 hr
+  - [ ] ReservationService 1.5 hr
+  - [ ] Response/Result - 30 min
+  - [ ] Testing - 2 hr
+- [ ] UI Layer
+  - [ ] ConsoleIO - 1 hr
+  - [ ] Controller - at least 3 hrs
+    - [ ] view - 1 hr
+    - [ ] update - 1 hr
+    - [ ] delete - 30 min
+    - [ ] create - 1 hr
+    - [ ] helper - 3 hr
+  - [ ] View - at least 2 hr
+    - [ ] getter methods - 1 hr
+    - [ ] helper methods - 1 hr
+    - [ ] displayMethod - 45 min
+
 
 # Sample UI
 
