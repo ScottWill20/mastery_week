@@ -183,6 +183,9 @@ private final HostRepository repository;
 private final GuestRepository repository;
 private final ReservationRepository repository;
 
+public ReservationService()
+
+publicList<Reservation> findByEmail
 
 
 
