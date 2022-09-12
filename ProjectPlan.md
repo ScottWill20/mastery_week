@@ -90,6 +90,7 @@ private LocalDate checkIn
 private LocalDate checkOut
 private Host host;
 private Guest guest;
+private BigDecimal total;
 
 getters and setters
 
