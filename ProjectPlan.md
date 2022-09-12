@@ -66,7 +66,8 @@ private string streetAddress
 private String city
 private String state
 private int zipCode
-private BigDecimal costPerNight 
+private BigDecimal costPerWeekDay
+private BigDecimal costPerWeekendDay
 
 public Host constructor
 getters
@@ -89,7 +90,6 @@ private LocalDate checkIn
 private LocalDate checkOut
 private Host host;
 private Guest guest;
-private double stayPeriod
 
 getters and setters
 
@@ -327,6 +327,8 @@ displayStatus overloaded?,
 
 
 ## Tasks & Schedule
+
+### Monday
 - [ ] Create directory structure - 15 min
 - [ ] Create classes and interfaces - 30 min
 - [ ] wiring with annotations - 30 min
@@ -337,18 +339,26 @@ displayStatus overloaded?,
   - [ ] Host - 15 min
   - [ ] Guest - 15 min
   - [ ] Reservation - 45 min
+- Total - 2.5 hours
+### Tuesday
 - [ ] Data Layer
   - [ ] HostFileRepo - 1 hr
   - [ ] GuestFileRepo - 1 hr
   - [ ] ReservationFileRepo - 2 hr
   - [ ] ensure all interfaces contain necessary methods - 30 min
-  - [ ] Test Domain Layer - at least 1 hr
+  - [ ] Test Data Layer - at least 1 hr
+- Total - 5.5 hours
+
+### Wednesday
 - [ ] Domain Layer
   - [ ] HostService - 1 hr
   - [ ] GuestService - 1 hr
   - [ ] ReservationService 1.5 hr
   - [ ] Response/Result - 30 min
   - [ ] Testing - 2 hr
+- Total - 5 hours
+
+### Thursday
 - [ ] UI Layer
   - [ ] ConsoleIO - 1 hr
   - [ ] Controller - at least 3 hrs
@@ -356,11 +366,22 @@ displayStatus overloaded?,
     - [ ] update - 1 hr
     - [ ] delete - 30 min
     - [ ] create - 1 hr
-    - [ ] helper - 3 hr
+    - [ ] helper - 2 hr
+- Total - 6.5 hours
+### Friday
+  - [ ] anything not completed in UI Layer
   - [ ] View - at least 2 hr
     - [ ] getter methods - 1 hr
     - [ ] helper methods - 1 hr
     - [ ] displayMethod - 45 min
+  - [ ] polish - 2 hr
+  - Total ~ 5 hours
+
+### Weekend
+ - Use to catch up on anything incomplete
+ - Polish testing
+ - confirm no validations need reworking
+ - etc.
 
 
 # Sample UI
