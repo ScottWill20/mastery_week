@@ -56,15 +56,15 @@ public class Reservation {
         return total;
     }
 
-    public BigDecimal setTotal(BigDecimal total) {
-        if (host == null || host.getWeekendRate() == null || host.getStandardRate() == null) {
-            return BigDecimal.ZERO;
-        }
-
-        if (checkIn.getDayOfWeek().equals(6) || checkIn.getDayOfWeek().equals(7)) {
-
-            BigDecimal length = new BigDecimal
-        }
-
-    }
+//    public BigDecimal setTotal(BigDecimal total) {
+//        if (host == null || host.getWeekendRate() == null || host.getStandardRate() == null) {
+//            return BigDecimal.ZERO;
+//        }
+//
+//        if (checkIn.getDayOfWeek().equals(6) || checkIn.getDayOfWeek().equals(7)) {
+//
+//            BigDecimal length = new BigDecimal
+//        }
+//
+//    }
 }
