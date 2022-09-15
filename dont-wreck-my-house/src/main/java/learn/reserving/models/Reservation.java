@@ -1,7 +1,7 @@
 package learn.reserving.models;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class Reservation {
@@ -56,15 +56,17 @@ public class Reservation {
         return total;
     }
 
-//    public BigDecimal setTotal(BigDecimal total) {
-//        if (host == null || host.getWeekendRate() == null || host.getStandardRate() == null) {
-//            return BigDecimal.ZERO;
-//        }
-//
-//        if (checkIn.getDayOfWeek().equals(6) || checkIn.getDayOfWeek().equals(7)) {
-//
-//            BigDecimal length = new BigDecimal
-//        }
-//
-//    }
+    public BigDecimal setTotal() {
+
+        for (LocalDate date = checkIn; date.isBefore(checkOut); date = date.plusDays(1)) {
+
+            if (date.getDayOfWeek() == DayOfWeek.FRIDAY || date.getDayOfWeek() == DayOfWeek.SATURDAY) {
+                total = total.add(getHost().getWeekendRate());
+            } else {
+                total = total.add(getHost().getStandardRate());
+            }
+        }
+        return total;
+    }
+
 }

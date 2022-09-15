@@ -20,6 +20,30 @@ private String state;
         this.state = state;
     }
 
+    public void setGuestId(int guestId) {
+        this.guestId = guestId;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public int getGuestId() {
         return guestId;
     }

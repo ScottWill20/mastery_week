@@ -29,6 +29,46 @@ public class Host {
         this.weekendRate = weekendRate;
     }
 
+    public void setHostId(String hostId) {
+        this.hostId = hostId;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setZipCode(int zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public void setStandardRate(BigDecimal standardRate) {
+        this.standardRate = standardRate;
+    }
+
+    public void setWeekendRate(BigDecimal weekendRate) {
+        this.weekendRate = weekendRate;
+    }
+
     public String getHostId() {
         return hostId;
     }
