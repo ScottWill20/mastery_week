@@ -1,5 +1,6 @@
 package learn.reserving.domain;
 
+import learn.reserving.data.DataException;
 import learn.reserving.data.GuestRepository;
 import learn.reserving.data.HostRepository;
 import learn.reserving.data.ReservationRepository;
@@ -8,6 +9,7 @@ import learn.reserving.models.Host;
 import learn.reserving.models.Reservation;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,4 +42,86 @@ public class ReservationService {
         }
         return result;
     }
+
+    public Result<Reservation> add(Reservation reservation) throws DataException {
+        Result<Reservation> result = validate(reservation);
+        if (result.isSuccess()) {
+            return result;
+        }
+
+        result.setPayload(reservationRepository.add(reservation));
+        return result;
+    }
+
+    private Result<Reservation> validate(Reservation reservation) {
+        Result<Reservation> result = validateNulls(reservation);
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        validateFields(reservation,result);
+        if (!result.isSuccess()) {
+            return result;
+        }
+
+        validateChildrenExist(reservation, result);
+
+        return result;
+    }
+
+    private Result<Reservation> validateNulls(Reservation reservation){
+        Result<Reservation> result = new Result<>();
+
+        if (reservation == null) {
+            result.addErrorMessage("Nothing to save.");
+            return result;
+        }
+
+        if (reservation.getCheckIn() == null) {
+            result.addErrorMessage("Check-in date is required.");
+        }
+
+        if (reservation.getCheckOut() == null) {
+            result.addErrorMessage("Check-out date is required.");
+        }
+
+        if (reservation.getHost() == null) {
+            result.addErrorMessage("Host is required.");
+        }
+
+        if (reservation.getGuest() == null) {
+            result.addErrorMessage("Guest is required.");
+        }
+        return result;
+    }
+
+    private void validateFields(Reservation reservation, Result<Reservation> result) {
+        if (reservation.getCheckIn().isBefore(LocalDate.now())) {
+            result.addErrorMessage("Check-in date cannot be in the past.");
+        }
+        if (reservation.getCheckOut().isBefore(LocalDate.now())) {
+            result.addErrorMessage("Check-out date cannot be in the past.");
+        }
+        if (reservation.getCheckIn().isAfter(reservation.getCheckOut())) {
+            result.addErrorMessage("Check-out date cannot be before check-in date.");
+        }
+
+    }
+
+//    private void validateNoOverlappingDates(Reservation reservation, Result<Reservation> result) {
+//
+//        Host host = reservation.getHost();
+//        for (Reservation existingRes : )
+//    }
+
+    private void validateChildrenExist(Reservation reservation, Result<Reservation> result) {
+        if (reservation.getHost().getHostId() == null
+        || hostRepository.findByEmail(reservation.getHost().getEmail()) == null) {
+            result.addErrorMessage("Host does not exist.");
+        }
+        if (guestRepository.findById(reservation.getGuest().getGuestId()) == null) {
+            result.addErrorMessage("Guest does not exist.");
+        }
+    }
+
 }

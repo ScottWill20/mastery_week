@@ -4,6 +4,8 @@ import learn.reserving.data.DataException;
 import learn.reserving.domain.GuestService;
 import learn.reserving.domain.HostService;
 import learn.reserving.domain.ReservationService;
+import learn.reserving.domain.Result;
+import learn.reserving.models.Guest;
 import learn.reserving.models.Host;
 import learn.reserving.models.Reservation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +31,16 @@ public class Controller {
 
     public void run() {
         view.displayHeader("Welcome to Don't Wreck My House!");
-        runAppLoop();
+        try {
+            runAppLoop();
+        } catch (DataException ex) {
+            view.displayException(ex);
+        }
         view.displayHeader("Goodbye.");
 
     }
 
-    private void runAppLoop() {
+    private void runAppLoop() throws DataException {
         MainMenuOption option;
         do {
             option = view.selectMainMenuOption();
@@ -51,13 +57,47 @@ public class Controller {
 
 
     private void viewByHost() {
+        view.displayHeader(MainMenuOption.VIEW_RESERVATIONS_BY_HOST.getMessage());
         String email = view.getHostEmail();
         List<Reservation> reservations = reservationService.findReservationsByHost(email);
         view.displayReservations(reservations);
         view.enterToContinue();
     }
 
-    private void addReservation() {
+    private void addReservation() throws DataException {
+        view.displayHeader(MainMenuOption.ADD_RESERVATION.getMessage());
+        Guest guest = getGuest();
+        if (guest == null) {
+            return;
+        }
+        Host host = getHost();
+        if (host == null) {
+            return;
+        }
+        Reservation reservation = view.makeReservation(guest,host);
+        Result<Reservation> result = reservationService.add(reservation);
+        if (!result.isSuccess()) {
+            view.displayStatus(false,result.getErrorMessages());
+        } else {
+            view.displayHeader("Success");
+            String successMessage = String.format("Reservation %s created.",result.getPayload().getResId());
+            view.displayStatus(true,successMessage);
+        }
+
     }
+
+
+    private Guest getGuest() {
+        String guestEmail = view.getGuestEmail();
+        return guestService.findByEmail(guestEmail);
+    }
+
+    private Host getHost() {
+        String hostEmail = view.getHostEmail();
+        return hostService.findByEmail(hostEmail);
+
+    }
+
+
 
 }

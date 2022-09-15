@@ -2,7 +2,9 @@ package learn.reserving.ui;
 
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 @Component
@@ -75,6 +77,17 @@ public class ConsoleIO {
                 return false;
             }
             println("[INVALID] Please enter 'y' or 'n'.");
+        }
+    }
+
+    public LocalDate readLocalDate(String prompt) {
+        while (true) {
+            String input = readRequiredString(prompt);
+            try {
+                return LocalDate.parse(input, formatter);
+            } catch (DateTimeParseException ex) {
+                println(INVALID_DATE);
+            }
         }
     }
 

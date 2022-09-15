@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 public class ReservationFileRepository implements ReservationRepository {
@@ -49,10 +48,15 @@ public class ReservationFileRepository implements ReservationRepository {
         return result;
     }
 
-//    @Override
-//    public Reservation add(Reservation reservation) {
-//        List<Reservation> all = findByUUID(reservation.getHost().getHostId());
-//    }
+    @Override
+    public Reservation add(Reservation reservation) throws DataException {
+        List<Reservation> all = findReservationsByHost(reservation.getHost());
+        int nextId = getNextId(all);
+        reservation.setResId(nextId);
+        all.add(reservation);
+        writeAll(all,reservation.getHost());
+        return reservation;
+    }
 
 
     private String getFilePath(Host host) {
@@ -94,6 +98,17 @@ public class ReservationFileRepository implements ReservationRepository {
         guest.setGuestId(Integer.parseInt(fields[3]));
 
         return result;
+    }
+
+
+    private int getNextId(List<Reservation> reservations) {
+        int maxId = 0;
+        for (Reservation reservation : reservations) {
+            if (maxId < reservation.getResId()) {
+                maxId = reservation.getResId();
+            }
+        }
+        return maxId + 1;
     }
 
 

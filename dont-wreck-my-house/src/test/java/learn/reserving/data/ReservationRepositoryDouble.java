@@ -32,7 +32,14 @@ public class ReservationRepositoryDouble implements ReservationRepository {
     public List<Reservation> findReservationsByHost(Host host) {
 
         return reservations.stream()
-                .filter(i -> i.getHost().getHostId().equals(host))
+                .filter(i -> i.getHost().getHostId().equals(host.getHostId()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Reservation add(Reservation reservation) throws DataException {
+        reservation.setResId(13);
+        reservations.add(reservation);
+        return reservation;
     }
 }

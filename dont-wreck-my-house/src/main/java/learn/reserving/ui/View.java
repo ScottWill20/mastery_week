@@ -1,6 +1,8 @@
 package learn.reserving.ui;
 
 import learn.reserving.data.DataException;
+import learn.reserving.models.Guest;
+import learn.reserving.models.Host;
 import learn.reserving.models.Reservation;
 import org.springframework.stereotype.Component;
 
@@ -29,8 +31,11 @@ public class View {
     }
 
     public String getHostEmail() {
-        displayHeader(MainMenuOption.VIEW_RESERVATIONS_BY_HOST.getMessage());
         return io.readRequiredString("Host Email: ");
+    }
+
+    public String getGuestEmail() {
+        return io.readRequiredString("Guest Email: ");
     }
 
     public void displayReservations(List<Reservation> reservations) {
@@ -47,6 +52,16 @@ public class View {
                     reservation.getGuest().getLastName(),
                     reservation.getGuest().getEmail());
         }
+    }
+
+    public Reservation makeReservation(Guest guest, Host host) {
+        Reservation reservation = new Reservation();
+        reservation.setGuest(guest);
+        reservation.setHost(host);
+        reservation.setCheckIn(io.readLocalDate("Check-In (MM/dd/yyyy): "));
+        reservation.setCheckOut(io.readLocalDate("Check-Out (MM/dd/yyyy): "));
+        reservation.setTotal();
+        return reservation;
     }
 
     public void enterToContinue() {

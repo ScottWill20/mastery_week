@@ -29,16 +29,16 @@ public class App {
         controller.run();
     }
 
-    private static void configureManuallyAndRun() {
-        ReservationFileRepository reservationFileRepository = new ReservationFileRepository("./data/reservations");
-        GuestFileRepository guestFileRepository = new GuestFileRepository("./data/guests.csv");
-        HostFileRepository hostFileRepository = new HostFileRepository("./data/hosts.csv");
-        ConsoleIO consoleIO = new ConsoleIO();
-        View view = new View(consoleIO);
-        ReservationService reservationService = new ReservationService(reservationFileRepository,hostFileRepository,guestFileRepository);
-        GuestService guestService = new GuestService();
-        HostService hostService = new HostService();
-        Controller controller = new Controller(reservationService,hostService,guestService,view);
-        controller.run();
-    }
+//    private static void configureManuallyAndRun() {
+//        ReservationFileRepository reservationFileRepository = new ReservationFileRepository("./data/reservations");
+//        GuestFileRepository guestFileRepository = new GuestFileRepository("./data/guests.csv");
+//        HostFileRepository hostFileRepository = new HostFileRepository("./data/hosts.csv");
+//        ConsoleIO consoleIO = new ConsoleIO();
+//        View view = new View(consoleIO);
+//        ReservationService reservationService = new ReservationService(reservationFileRepository,hostFileRepository,guestFileRepository);
+//        GuestService guestService = new GuestService();
+//        HostService hostService = new HostService();
+//        Controller controller = new Controller(reservationService,hostService,guestService,view);
+//        controller.run();
+//    }
 }
