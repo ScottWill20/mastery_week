@@ -25,11 +25,13 @@ public class ReservationService {
         this.guestRepository = guestRepository;
     }
 
-    public List<Reservation> findReservationsByHost(Host host) {
+    public List<Reservation> findReservationsByHost(String hostEmail) {
         Map<String, Host> hostMap = hostRepository.findAll().stream()
                 .collect(Collectors.toMap(i -> i.getHostId(), i-> i));
         Map<Integer, Guest> guestMap = guestRepository.findAll().stream()
                 .collect(Collectors.toMap(i -> i.getGuestId(), i -> i));
+
+        Host host = hostRepository.findByEmail(hostEmail);
 
         List<Reservation> result = reservationRepository.findReservationsByHost(host);
         for (Reservation reservation : result) {

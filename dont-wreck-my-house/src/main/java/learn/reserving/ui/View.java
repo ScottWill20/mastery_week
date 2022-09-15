@@ -39,7 +39,7 @@ public class View {
             return;
         }
         for (Reservation reservation : reservations) {
-            io.printf("ID: %s, %s - %s, Guest: %s, %s, Email: %s",
+            io.printf("ID: %s, %s - %s, Guest: %s, %s, Email: %s%n",
                     reservation.getResId(),
                     reservation.getCheckIn(),
                     reservation.getCheckOut(),

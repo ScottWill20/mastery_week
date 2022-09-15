@@ -21,7 +21,8 @@ class ReservationFileRepositoryTest {
     static final String TEST_DIR_PATH = "./data/reservations_test";
     static final int RESERVATION_COUNT = 12;
 
-    final Host host ;
+    final Host host = new Host();
+
 
     ReservationFileRepository repository = new ReservationFileRepository(TEST_DIR_PATH);
 
@@ -35,6 +36,7 @@ class ReservationFileRepositoryTest {
 
     @Test
     void findReservationsByHost() {
+        host.setHostId("2e72f86c-b8fe-4265-b4f1-304dea8762db");
         List<Reservation> reservations = repository.findReservationsByHost(host);
         assertEquals(RESERVATION_COUNT,reservations.size());
     }

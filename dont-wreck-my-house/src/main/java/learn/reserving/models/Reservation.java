@@ -56,7 +56,8 @@ public class Reservation {
         return total;
     }
 
-    public BigDecimal setTotal() {
+    public void setTotal() {
+        BigDecimal totalCost = BigDecimal.ZERO;
 
         for (LocalDate date = checkIn; date.isBefore(checkOut); date = date.plusDays(1)) {
 
@@ -66,7 +67,11 @@ public class Reservation {
                 total = total.add(getHost().getStandardRate());
             }
         }
-        return total;
+        this.total = totalCost;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
 }
