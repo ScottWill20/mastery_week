@@ -86,6 +86,23 @@ public class Controller {
 
     }
 
+    private void updateReservation() {
+        view.displayHeader(MainMenuOption.EDIT_RESERVATION.getMessage());
+        Guest guest = getGuest();
+        if (guest == null) {
+            return;
+        }
+        Host host = getHost();
+        if (host == null) {
+            return;
+        }
+        // print header last name and location of host
+
+
+    }
+
+
+
 
     private Guest getGuest() {
         String guestEmail = view.getGuestEmail();

@@ -42,4 +42,14 @@ public class ReservationRepositoryDouble implements ReservationRepository {
         reservations.add(reservation);
         return reservation;
     }
+
+    @Override
+    public boolean update(Reservation reservation) throws DataException {
+        return false;
+    }
+
+    @Override
+    public boolean deleteByResId(Reservation reservation) throws DataException {
+        return false;
+    }
 }

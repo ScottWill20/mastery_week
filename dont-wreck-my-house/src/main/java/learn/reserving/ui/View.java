@@ -64,6 +64,7 @@ public class View {
         return reservation;
     }
 
+
     public void enterToContinue() {
         io.readString("Press [Enter] to continue.");
     }

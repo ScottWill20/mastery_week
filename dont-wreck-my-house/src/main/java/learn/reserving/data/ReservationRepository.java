@@ -10,4 +10,8 @@ public interface ReservationRepository {
 
     Reservation add(Reservation reservation) throws DataException;
 
+    boolean update(Reservation reservation) throws DataException;
+
+    boolean deleteByResId(Reservation reservation) throws DataException;
+
 }

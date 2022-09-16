@@ -23,8 +23,6 @@ public class ReservationFileRepository implements ReservationRepository {
         this.directory = directory;
     }
 
-    // findReservationsByHost
-
 
     @Override
     public List<Reservation> findReservationsByHost(Host host) {
@@ -56,6 +54,32 @@ public class ReservationFileRepository implements ReservationRepository {
         all.add(reservation);
         writeAll(all,reservation.getHost());
         return reservation;
+    }
+
+    @Override
+    public boolean update(Reservation reservation) throws DataException {
+        List<Reservation> all = findReservationsByHost(reservation.getHost());
+        for (int i = 0; i < all.size(); i++) {
+            if (all.get(i).getResId() == reservation.getResId()) {
+                all.set(i,reservation);
+                writeAll(all,reservation.getHost());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteByResId(Reservation reservation) throws DataException {
+        List<Reservation> all = findReservationsByHost(reservation.getHost());
+        for (int i = 0; i < all.size(); i++) {
+            if (all.get(i).getResId() == reservation.getResId()) {
+                all.remove(i);
+                writeAll(all,reservation.getHost());
+                return true;
+            }
+        }
+        return false;
     }
 
 

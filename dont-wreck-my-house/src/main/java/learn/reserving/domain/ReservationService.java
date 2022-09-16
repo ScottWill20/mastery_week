@@ -27,6 +27,12 @@ public class ReservationService {
         this.guestRepository = guestRepository;
     }
 
+    // findResById()
+    // inputs = email and id
+    // call findReservationByHost
+    // filter for ID that user inputs
+    // return reservation at ID#
+
     public List<Reservation> findReservationsByHost(String hostEmail) {
         Map<String, Host> hostMap = hostRepository.findAll().stream()
                 .collect(Collectors.toMap(i -> i.getHostId(), i-> i));
@@ -50,6 +56,31 @@ public class ReservationService {
         }
 
         result.setPayload(reservationRepository.add(reservation));
+        return result;
+    }
+
+    public Result<Reservation> update(Reservation reservation) throws DataException {
+        Result<Reservation> result = validate(reservation);
+
+        if (!result.isSuccess()) {
+            return result;
+        }
+        boolean updated = reservationRepository.update(reservation);
+        if (!updated) {
+            result.addErrorMessage(String.format("Reservation for %s %s from %s to %s does not exist.",
+                    reservation.getGuest().getFirstName(),
+                    reservation.getGuest().getLastName(),
+                    reservation.getCheckIn(),
+                    reservation.getCheckOut()));
+        }
+        return result;
+    }
+
+    public Result<Reservation> delete(Reservation reservation) throws DataException {
+        Result<Reservation> result = new Result<>();
+        if (!reservationRepository.deleteByResId(reservation)) {
+            result.addErrorMessage(String.format("Reservation with ID %s does not exist.", reservation.getResId()));
+        }
         return result;
     }
 
@@ -123,5 +154,9 @@ public class ReservationService {
             result.addErrorMessage("Guest does not exist.");
         }
     }
+
+    // inputs = host & guest
+    // filter reservations for host
+    // only return for that specific guest
 
 }
