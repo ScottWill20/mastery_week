@@ -32,6 +32,13 @@ public class ReservationService {
     // call findReservationByHost
     // filter for ID that user inputs
     // return reservation at ID#
+    public List<Reservation> findResById(String email, int id) {
+        Host host = hostRepository.findByEmail(email);
+        Guest guest = guestRepository.findById(id);
+        List<Reservation> reservations = findOneReservation(host,guest);
+        return reservations;
+
+    }
 
     public List<Reservation> findReservationsByHost(String hostEmail) {
         Map<String, Host> hostMap = hostRepository.findAll().stream()
@@ -51,9 +58,11 @@ public class ReservationService {
 
     public Result<Reservation> add(Reservation reservation) throws DataException {
         Result<Reservation> result = validate(reservation);
+
         if (result.isSuccess()) {
             return result;
         }
+
 
         result.setPayload(reservationRepository.add(reservation));
         return result;
@@ -91,6 +100,10 @@ public class ReservationService {
         }
 
         validateFields(reservation,result);
+        if (!result.isSuccess()) {
+            return result;
+        }
+        nonOverlappingDates(reservation);
         if (!result.isSuccess()) {
             return result;
         }
@@ -139,12 +152,6 @@ public class ReservationService {
 
     }
 
-//    private void validateNoOverlappingDates(Reservation reservation, Result<Reservation> result) {
-//
-//        Host host = reservation.getHost();
-//        for (Reservation existingRes : )
-//    }
-
     private void validateChildrenExist(Reservation reservation, Result<Reservation> result) {
         if (reservation.getHost().getHostId() == null
         || hostRepository.findByEmail(reservation.getHost().getEmail()) == null) {
@@ -158,5 +165,30 @@ public class ReservationService {
     // inputs = host & guest
     // filter reservations for host
     // only return for that specific guest
+
+    private List<Reservation> findOneReservation(Host host, Guest guest) {
+        List<Reservation> result = findReservationsByHost(host.getEmail());
+        result = result.stream().filter(g -> g.getGuest().getGuestId() == guest.getGuestId())
+                .collect(Collectors.toList());
+        return result;
+    }
+
+    public void nonOverlappingDates(Reservation reservation) {
+        List<Reservation> reservations = reservationRepository.findReservationsByHost(reservation.getHost());
+
+        for (Reservation existingRes : reservations) {
+            if (reservation.getCheckIn().isBefore(existingRes.getCheckIn()) && reservation.getCheckOut().isAfter(existingRes.getCheckIn())) {
+                return;
+            }
+            if (reservation.getCheckIn().isBefore(existingRes.getCheckOut()) && reservation.getCheckOut().isAfter(existingRes.getCheckOut())) {
+                return;
+            }
+            if (reservation.getCheckIn().isAfter(existingRes.getCheckIn()) && reservation.getCheckOut().isBefore(existingRes.getCheckOut())) {
+                return;
+            }
+        }
+        reservations.add(reservation);
+    }
+
 
 }

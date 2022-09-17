@@ -14,7 +14,9 @@ public class ReservationServiceTest {
 
 
     @Test
-    void shouldFindByHostEmail() {}
+    void shouldFindByHostEmail() {
+
+    }
     @Test
     void shouldNotFindByNullHostEmail() {}
     @Test

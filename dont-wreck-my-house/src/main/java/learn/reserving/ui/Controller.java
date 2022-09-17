@@ -50,6 +50,13 @@ public class Controller {
                     break;
                 case ADD_RESERVATION:
                     addReservation();
+                    break;
+                case EDIT_RESERVATION:
+                    updateReservation();
+                    break;
+                case CANCEL_RESERVATION:
+//                    cancelReservation();
+                    break;
             }
         } while (option != MainMenuOption.EXIT);
     }
@@ -97,6 +104,9 @@ public class Controller {
             return;
         }
         // print header last name and location of host
+        view.displayHeader(host.getLastName() + " - " + host.getCity() + ", " + host.getState());
+        List<Reservation> reservations = reservationService.findResById(host.getEmail(), guest.getGuestId());
+        view.displayReservations(reservations);
 
 
     }
