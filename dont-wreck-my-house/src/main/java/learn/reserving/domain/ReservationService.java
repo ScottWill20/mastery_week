@@ -59,7 +59,7 @@ public class ReservationService {
     public Result<Reservation> add(Reservation reservation) throws DataException {
         Result<Reservation> result = validate(reservation);
 
-        if (result.isSuccess()) {
+        if (!result.isSuccess()) {
             return result;
         }
 
@@ -162,18 +162,7 @@ public class ReservationService {
         }
     }
 
-    // inputs = host & guest
-    // filter reservations for host
-    // only return for that specific guest
-
-    private List<Reservation> findOneReservation(Host host, Guest guest) {
-        List<Reservation> result = findReservationsByHost(host.getEmail());
-        result = result.stream().filter(g -> g.getGuest().getGuestId() == guest.getGuestId())
-                .collect(Collectors.toList());
-        return result;
-    }
-
-    public void nonOverlappingDates(Reservation reservation) {
+    private void nonOverlappingDates(Reservation reservation) {
         List<Reservation> reservations = reservationRepository.findReservationsByHost(reservation.getHost());
 
         for (Reservation existingRes : reservations) {
@@ -189,6 +178,19 @@ public class ReservationService {
         }
         reservations.add(reservation);
     }
+
+    // inputs = host & guest
+    // filter reservations for host
+    // only return for that specific guest
+
+    private List<Reservation> findOneReservation(Host host, Guest guest) {
+        List<Reservation> result = findReservationsByHost(host.getEmail());
+        result = result.stream().filter(g -> g.getGuest().getGuestId() == guest.getGuestId())
+                .collect(Collectors.toList());
+        return result;
+    }
+
+
 
 
 }

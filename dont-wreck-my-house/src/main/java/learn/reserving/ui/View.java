@@ -38,6 +38,24 @@ public class View {
         return io.readRequiredString("Guest Email: ");
     }
 
+    public Reservation chooseReservation(List<Reservation> reservations) {
+
+        displayReservations(reservations);
+
+        if (reservations.size() == 0) {
+            return null;
+        }
+        int reservationId = io.readInt("Reservation ID: ");
+        Reservation reservation = reservations.stream().filter(i -> i.getResId() == reservationId)
+                .findFirst().orElse(null);
+
+        if (reservation == null) {
+            displayStatus(false, String.format("No reservation with ID %s found.",reservationId));
+        }
+
+        return reservation;
+    }
+
     public void displayReservations(List<Reservation> reservations) {
         if (reservations == null || reservations.isEmpty()) {
             io.println("No reservations found with that host.");
@@ -64,9 +82,32 @@ public class View {
         return reservation;
     }
 
+    public void editReservation(Reservation reservation) {
+        displayHeader("Editing Reservation " + reservation.getResId());
+
+        reservation.setCheckIn(io.readLocalDate(String.format("Check In (%s/%s/%s): ",
+                reservation.getCheckIn().getMonth().getValue(),
+                reservation.getCheckIn().getDayOfMonth(),
+                reservation.getCheckIn().getYear())));
+
+        reservation.setCheckOut(io.readLocalDate(String.format("Check Out (%s/%s/%s): ",
+                reservation.getCheckOut().getMonth().getValue(),
+                reservation.getCheckOut().getDayOfMonth(),
+                reservation.getCheckOut().getYear())));
+
+        reservation.setTotal();
+    }
+
 
     public void enterToContinue() {
         io.readString("Press [Enter] to continue.");
+    }
+
+    public void displaySummary(Reservation reservation) {
+        displayHeader("Summary");
+        io.println("Check In: " + reservation.getCheckIn());
+        io.println("Check Out: " + reservation.getCheckOut());
+        io.println("Total: " + reservation.getTotal());
     }
 
     public void displayHeader(String message) {
@@ -89,5 +130,17 @@ public class View {
         displayHeader("A critical error occurred:");
         io.println(ex.getMessage());
 
+    }
+
+    public boolean readBoolean(String prompt) {
+        while (true) {
+            String input = io.readRequiredString(prompt).toLowerCase();
+            if (input.equals("y")) {
+                return true;
+            } else if (input.equals("n")) {
+                return false;
+            }
+            io.println("[INVALID] Please enter 'y' or 'n'.");
+        }
     }
 }

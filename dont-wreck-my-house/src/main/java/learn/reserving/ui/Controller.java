@@ -22,7 +22,7 @@ public class Controller {
     private final View view;
 
     @Autowired
-    public Controller(ReservationService reservationService, HostService hostService, GuestService guestService, View view) {
+    public Controller(ReservationService reservationService, HostService hostService, GuestService guestService, View view, ConsoleIO io) {
         this.reservationService = reservationService;
         this.hostService = hostService;
         this.guestService = guestService;
@@ -55,7 +55,7 @@ public class Controller {
                     updateReservation();
                     break;
                 case CANCEL_RESERVATION:
-//                    cancelReservation();
+                    cancelReservation();
                     break;
             }
         } while (option != MainMenuOption.EXIT);
@@ -86,14 +86,13 @@ public class Controller {
         if (!result.isSuccess()) {
             view.displayStatus(false,result.getErrorMessages());
         } else {
-            view.displayHeader("Success");
             String successMessage = String.format("Reservation %s created.",result.getPayload().getResId());
             view.displayStatus(true,successMessage);
         }
 
     }
 
-    private void updateReservation() {
+    private void updateReservation() throws DataException {
         view.displayHeader(MainMenuOption.EDIT_RESERVATION.getMessage());
         Guest guest = getGuest();
         if (guest == null) {
@@ -105,10 +104,55 @@ public class Controller {
         }
         // print header last name and location of host
         view.displayHeader(host.getLastName() + " - " + host.getCity() + ", " + host.getState());
-        List<Reservation> reservations = reservationService.findResById(host.getEmail(), guest.getGuestId());
-        view.displayReservations(reservations);
+        List<Reservation> reservations = reservationService.findResById
+                (host.getEmail(), guest.getGuestId());
 
+        Reservation reservation = view.chooseReservation(reservations);
 
+        view.editReservation(reservation);
+
+        view.displaySummary(reservation);
+        if (!view.readBoolean("Is this okay? [y/n]: ")) {
+            return;
+        }
+
+        Result<Reservation> result = reservationService.update(reservation);
+
+        if (!result.isSuccess()) {
+            view.displayStatus(false,result.getErrorMessages());
+        } else {
+            String successMessage = String.format("Reservation %s updated.",reservation.getResId());
+            view.displayStatus(true,successMessage);
+        }
+
+    }
+
+    private void cancelReservation() throws DataException {
+        view.displayHeader(MainMenuOption.CANCEL_RESERVATION.getMessage());
+        Guest guest = getGuest();
+        if (guest == null) {
+            System.out.println("No Guest with that email found.");
+            return;
+        }
+        Host host = getHost();
+        if (host == null) {
+            System.out.println("No Host with that email found.");
+            return;
+        }
+
+        view.displayHeader(host.getLastName() + " - " + host.getCity() + ", " + host.getState());
+        List<Reservation> reservations = reservationService.findResById
+                (host.getEmail(), guest.getGuestId());
+
+        Reservation reservation = view.chooseReservation(reservations);
+        Result<Reservation> result = reservationService.delete(reservation);
+
+        if (!result.isSuccess()) {
+            view.displayStatus(false,result.getErrorMessages());
+        } else {
+            String successMessage = String.format("Reservation %s cancelled.",reservation.getResId());
+            view.displayStatus(true,successMessage);
+        }
     }
 
 
@@ -124,7 +168,5 @@ public class Controller {
         return hostService.findByEmail(hostEmail);
 
     }
-
-
 
 }
