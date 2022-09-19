@@ -75,10 +75,12 @@ public class Controller {
         view.displayHeader(MainMenuOption.ADD_RESERVATION.getMessage());
         Guest guest = getGuest();
         if (guest == null) {
+            System.out.println("No Guest with that email found.");
             return;
         }
         Host host = getHost();
         if (host == null) {
+            System.out.println("No Host with that email found.");
             return;
         }
         Reservation reservation = view.makeReservation(guest,host);
@@ -96,10 +98,12 @@ public class Controller {
         view.displayHeader(MainMenuOption.EDIT_RESERVATION.getMessage());
         Guest guest = getGuest();
         if (guest == null) {
+            System.out.println("No Guest with that email found.");
             return;
         }
         Host host = getHost();
         if (host == null) {
+            System.out.println("No Host with that email found.");
             return;
         }
         // print header last name and location of host

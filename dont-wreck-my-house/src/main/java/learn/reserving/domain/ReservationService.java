@@ -35,7 +35,7 @@ public class ReservationService {
     public List<Reservation> findResById(String email, int id) {
         Host host = hostRepository.findByEmail(email);
         Guest guest = guestRepository.findById(id);
-        List<Reservation> reservations = findOneReservation(host,guest);
+        List<Reservation> reservations = findGuestReservationAtHost(host,guest);
         return reservations;
 
     }
@@ -183,7 +183,7 @@ public class ReservationService {
     // filter reservations for host
     // only return for that specific guest
 
-    private List<Reservation> findOneReservation(Host host, Guest guest) {
+    private List<Reservation> findGuestReservationAtHost(Host host, Guest guest) {
         List<Reservation> result = findReservationsByHost(host.getEmail());
         result = result.stream().filter(g -> g.getGuest().getGuestId() == guest.getGuestId())
                 .collect(Collectors.toList());

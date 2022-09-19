@@ -5,6 +5,7 @@ import learn.reserving.models.Host;
 import learn.reserving.models.Reservation;
 
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,9 @@ public class ReservationRepositoryDouble implements ReservationRepository {
     final LocalDate start = LocalDate.of(2022,9,16);
     final LocalDate end = LocalDate.of(2022,9,22);
 
-    Host host = new Host();
+    public final static Host HOST = makeHost();
+    public final ArrayList<Host> hosts = new ArrayList<>();
+
     private final ArrayList<Reservation> reservations = new ArrayList<>();
 
     public ReservationRepositoryDouble() {
@@ -51,5 +54,18 @@ public class ReservationRepositoryDouble implements ReservationRepository {
     @Override
     public boolean deleteByResId(Reservation reservation) throws DataException {
         return false;
+    }
+    public static Host makeHost() {
+        Host host = new Host();
+        host.setHostId("0e4707f4-407e-4ec9-9665-baca0aabe88c");
+        host.setLastName("Sisse");
+        host.setEmail("jsisse@gmail.com");
+        host.setPhone("(555) 5555555");
+        host.setAddress("1122 Boogie Woogie Ave");
+        host.setState("CA");
+        host.setZipCode(12345);
+        host.setStandardRate(BigDecimal.valueOf(50));
+        host.setWeekendRate(BigDecimal.valueOf(100));
+        return host;
     }
 }
