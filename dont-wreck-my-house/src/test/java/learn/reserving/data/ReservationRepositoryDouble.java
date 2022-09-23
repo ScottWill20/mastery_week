@@ -49,12 +49,12 @@ public class ReservationRepositoryDouble implements ReservationRepository {
 
     @Override
     public boolean update(Reservation reservation) throws DataException {
-        return false;
+        return reservation.getResId() == 1;
     }
 
     @Override
     public boolean deleteByResId(Reservation reservation) throws DataException {
-        return false;
+        return reservation.getResId() == 1;
     }
     public static Host makeHost() {
         Host host = new Host();

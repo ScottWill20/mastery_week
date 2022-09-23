@@ -114,7 +114,9 @@ public class ReservationServiceTest {
         Reservation reservation = reservations.stream().filter(i -> i.getResId() == reservationId)
                 .findFirst().orElse(null);
 
+        assert reservation != null;
         Result<Reservation> result = service.delete(reservation);
+
         assertTrue(result.isSuccess());
     }
     @Test

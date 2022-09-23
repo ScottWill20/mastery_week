@@ -90,6 +90,9 @@ public class ReservationService {
 
     public Result<Reservation> delete(Reservation reservation) throws DataException {
         Result<Reservation> result = new Result<>();
+        if (reservation.getCheckOut().isBefore(LocalDate.now())) {
+            result.addErrorMessage("You cannot delete an old reservation.");
+        }
         if (!reservationRepository.deleteByResId(reservation)) {
             result.addErrorMessage(String.format("Reservation with ID %s does not exist.", reservation.getResId()));
         }
