@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class ReservationRepositoryDouble implements ReservationRepository {
 
     final LocalDate start = LocalDate.of(2022,9,16);
-    final LocalDate end = LocalDate.of(2022,9,22);
+    final LocalDate end = LocalDate.of(2022,9,21);
 
     public final static Host HOST = makeHost();
     public final ArrayList<Host> hosts = new ArrayList<>();

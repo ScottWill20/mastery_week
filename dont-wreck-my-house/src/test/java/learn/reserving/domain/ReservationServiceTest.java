@@ -59,6 +59,9 @@ public class ReservationServiceTest {
         assertTrue(result.isSuccess());
         assertNotNull(result.getPayload());
     }
+
+    @Test
+    void shouldNotAddWithStartDateBeforePresentDay() {}
     @Test
     void shouldValidateDuplicateDates() throws DataException {
         Reservation reservation = new Reservation();
@@ -102,11 +105,20 @@ public class ReservationServiceTest {
         assertEquals(0, result.getErrorMessages().size());
     }
     @Test
-    void shouldNotUpdateNonExisting() {
+    void shouldNotUpdateNonExisting() throws DataException {
+        List<Reservation> reservations = service.findResById("jsisse@gmail.com",1);
+        int reservationId = 2;
+        Reservation reservation = reservations.stream().filter(i -> i.getResId() == reservationId)
+                .findFirst().orElse(null);
 
+        reservation.setCheckIn(LocalDate.of(2024,1,11));
+        reservation.setCheckOut(LocalDate.of(2024,1,20));
+
+        Result<Reservation> result = service.update(reservation);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getErrorMessages().size());
     }
-    @Test
-    void shouldNotAddWithStartDateBeforePresentDay() {}
+
     @Test
     void shouldDelete() throws DataException {
         List<Reservation> reservations = service.findResById("jsisse@gmail.com",1);
@@ -120,6 +132,17 @@ public class ReservationServiceTest {
         assertTrue(result.isSuccess());
     }
     @Test
-    void shouldNotDeleteFromDatesInPast(){}
+    void shouldNotDeleteFromDatesInPast() throws DataException {
+        List<Reservation> reservations = service.findResById("jsisse@gmail.com",1);
+        int reservationId = 1;
+        Reservation reservation = reservations.stream().filter(i -> i.getResId() == reservationId)
+                .findFirst().orElse(null);
+
+        assert reservation != null;
+        Result<Reservation> result = service.delete(reservation);
+
+        assertFalse(result.isSuccess());
+        assertEquals(1,result.getErrorMessages().size());
+    }
 
 }
