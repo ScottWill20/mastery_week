@@ -61,7 +61,18 @@ public class ReservationServiceTest {
     }
 
     @Test
-    void shouldNotAddWithStartDateBeforePresentDay() {}
+    void shouldNotAddWithStartDateBeforePresentDay() throws DataException {
+        Reservation reservation = new Reservation();
+        reservation.setCheckIn(LocalDate.of(2022,9,21));
+        reservation.setCheckOut(LocalDate.of(2022,9,25));
+        reservation.setGuest(guest);
+        reservation.setHost(host);
+        reservation.setTotal();
+
+        Result<Reservation> result = service.add(reservation);
+        assertFalse(result.isSuccess());
+        assertEquals(1, result.getErrorMessages().size());
+    }
     @Test
     void shouldValidateDuplicateDates() throws DataException {
         Reservation reservation = new Reservation();
