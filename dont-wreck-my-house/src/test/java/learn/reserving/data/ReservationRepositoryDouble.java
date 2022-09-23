@@ -27,6 +27,7 @@ public class ReservationRepositoryDouble implements ReservationRepository {
         reservation.setCheckIn(start);
         reservation.setCheckOut(end);
         reservation.setGuest(new Guest(1,"Scott","Williams","swilliams@dev-10.com","913 907-5762", "KS"));
+        reservation.setHost(makeHost());
         reservation.setTotal();
         reservations.add(reservation);
 

@@ -59,7 +59,7 @@ public class Reservation {
     public void setTotal() {
         BigDecimal totalCost = BigDecimal.ZERO;
 
-        for (LocalDate date = checkIn; date.isBefore(checkOut.plusDays(1)); date = date.plusDays(1)) {
+        for (LocalDate date = checkIn; date.isBefore(checkOut); date = date.plusDays(1)) {
 
             if (date.getDayOfWeek() == DayOfWeek.FRIDAY || date.getDayOfWeek() == DayOfWeek.SATURDAY) {
                 totalCost = totalCost.add(getHost().getWeekendRate());

@@ -57,10 +57,6 @@ public class View {
     }
 
     public void displayReservations(List<Reservation> reservations) {
-        if (reservations == null || reservations.isEmpty()) {
-            io.println("No reservations found with that host.");
-            return;
-        }
         for (Reservation reservation : reservations) {
             io.printf("ID: %s, %s - %s, Guest: %s, %s, Email: %s%n",
                     reservation.getResId(),

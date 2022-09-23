@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,10 +50,12 @@ public class ReservationService {
         Host host = hostRepository.findByEmail(hostEmail);
 
         List<Reservation> result = reservationRepository.findReservationsByHost(host);
+
         for (Reservation reservation : result) {
             reservation.setHost(hostMap.get(reservation.getHost().getHostId()));
             reservation.setGuest(guestMap.get(reservation.getGuest().getGuestId()));
         }
+
         return result;
     }
 
@@ -165,14 +168,30 @@ public class ReservationService {
     private void nonOverlappingDates(Reservation reservation) {
         List<Reservation> reservations = reservationRepository.findReservationsByHost(reservation.getHost());
 
+        // TODO pass result
+
         for (Reservation existingRes : reservations) {
+            if (reservation.getResId() == existingRes.getResId()) {
+                continue; // skips comparison against itself - false positive
+            }
+            // encompasses
             if (reservation.getCheckIn().isBefore(existingRes.getCheckIn()) && reservation.getCheckOut().isAfter(existingRes.getCheckIn())) {
                 return;
             }
+            // check in overlaps
+            if (reservation.getCheckIn().isBefore(existingRes.getCheckIn()) && reservation.getCheckOut().isBefore(existingRes.getCheckOut())) {
+                return;
+            }
+            // check out overlaps
             if (reservation.getCheckIn().isBefore(existingRes.getCheckOut()) && reservation.getCheckOut().isAfter(existingRes.getCheckOut())) {
                 return;
             }
+            // within
             if (reservation.getCheckIn().isAfter(existingRes.getCheckIn()) && reservation.getCheckOut().isBefore(existingRes.getCheckOut())) {
+                return;
+            }
+            // matching dates
+            if (reservation.getCheckIn().isEqual(existingRes.getCheckIn()) && reservation.getCheckOut().isEqual(existingRes.getCheckOut())) {
                 return;
             }
         }

@@ -26,7 +26,6 @@ class ReservationFileRepositoryTest {
 
     final Host host = new Host();
 
-
     ReservationFileRepository repository = new ReservationFileRepository(TEST_DIR_PATH);
 
 
@@ -66,7 +65,7 @@ class ReservationFileRepositoryTest {
 
         reservation = repository.add(reservation);
 
-        assertEquals(new BigDecimal(1300),reservation.getTotal());
+        assertEquals(new BigDecimal(1100),reservation.getTotal());
 
 
 

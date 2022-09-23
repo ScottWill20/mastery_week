@@ -67,6 +67,11 @@ public class Controller {
         view.displayHeader(MainMenuOption.VIEW_RESERVATIONS_BY_HOST.getMessage());
         String email = view.getHostEmail();
         List<Reservation> reservations = reservationService.findReservationsByHost(email);
+//        reservations.stream().sorted()
+        if (reservations == null || reservations.isEmpty()) {
+            view.displayStatus(false,"That host is not in the system.");
+            return;
+        }
         view.displayReservations(reservations);
         view.enterToContinue();
     }
@@ -84,6 +89,12 @@ public class Controller {
             return;
         }
         Reservation reservation = view.makeReservation(guest,host);
+
+        view.displaySummary(reservation);
+        if (!view.readBoolean("Is this okay? [y/n]: ")) {
+            return;
+        }
+
         Result<Reservation> result = reservationService.add(reservation);
         if (!result.isSuccess()) {
             view.displayStatus(false,result.getErrorMessages());
@@ -91,6 +102,7 @@ public class Controller {
             String successMessage = String.format("Reservation %s created.",result.getPayload().getResId());
             view.displayStatus(true,successMessage);
         }
+        view.enterToContinue();
 
     }
 
@@ -98,19 +110,24 @@ public class Controller {
         view.displayHeader(MainMenuOption.EDIT_RESERVATION.getMessage());
         Guest guest = getGuest();
         if (guest == null) {
-            System.out.println("No Guest with that email found.");
+            view.displayStatus(false,"No Guest with that email found.");
             return;
         }
         Host host = getHost();
         if (host == null) {
-            System.out.println("No Host with that email found.");
+            view.displayStatus(false,"No Host with that email found.");
             return;
         }
+
         // print header last name and location of host
         view.displayHeader(host.getLastName() + " - " + host.getCity() + ", " + host.getState());
         List<Reservation> reservations = reservationService.findResById
                 (host.getEmail(), guest.getGuestId());
 
+        if (reservations.isEmpty()) {
+            view.displayStatus(false,"No reservations found.");
+            return;
+        }
         Reservation reservation = view.chooseReservation(reservations);
 
         view.editReservation(reservation);
@@ -128,6 +145,7 @@ public class Controller {
             String successMessage = String.format("Reservation %s updated.",reservation.getResId());
             view.displayStatus(true,successMessage);
         }
+        view.enterToContinue();
 
     }
 
@@ -144,9 +162,14 @@ public class Controller {
             return;
         }
 
-        view.displayHeader(host.getLastName() + " - " + host.getCity() + ", " + host.getState());
         List<Reservation> reservations = reservationService.findResById
                 (host.getEmail(), guest.getGuestId());
+
+        if (reservations == null || reservations.isEmpty()) {
+            view.displayStatus(false,"No reservations found.");
+            return;
+        }
+        view.displayHeader(host.getLastName() + " - " + host.getCity() + ", " + host.getState());
 
         Reservation reservation = view.chooseReservation(reservations);
         Result<Reservation> result = reservationService.delete(reservation);
@@ -157,9 +180,8 @@ public class Controller {
             String successMessage = String.format("Reservation %s cancelled.",reservation.getResId());
             view.displayStatus(true,successMessage);
         }
+        view.enterToContinue();
     }
-
-
 
 
     private Guest getGuest() {
