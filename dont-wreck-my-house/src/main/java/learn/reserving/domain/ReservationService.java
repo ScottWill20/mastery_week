@@ -48,8 +48,11 @@ public class ReservationService {
 
         Host host = hostRepository.findByEmail(hostEmail);
 
-        List<Reservation> result = reservationRepository.findReservationsByHost(host);
+        if (host == null || host.getHostId().isBlank() || host.getHostId() == null) {
+            return null;
+        }
 
+        List<Reservation> result = reservationRepository.findReservationsByHost(host);
 
         for (Reservation reservation : result) {
             reservation.setHost(hostMap.get(reservation.getHost().getHostId()));

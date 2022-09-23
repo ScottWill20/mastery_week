@@ -16,9 +16,8 @@ public class ReservationServiceTest {
     final Guest guest = new Guest(1,"Scott","Williams","swilliams@dev-10.com","913 907-5762", "KS");
     final Host host = new Host("0e4707f4-407e-4ec9-9665-baca0aabe88c", "Sisse","jsisse@gmail.com","(555) 5555555","1122 Boogie Woogie Ave","asdfasdf", "CA", 12345, new BigDecimal(50),new BigDecimal(100));
 
-    ReservationRepository repository = new ReservationRepositoryDouble();
     ReservationService service = new ReservationService(
-            repository,
+            new ReservationRepositoryDouble(),
             new HostRepositoryDouble(),
             new GuestRepositoryDouble());
 
@@ -27,20 +26,20 @@ public class ReservationServiceTest {
     void shouldFindByHostEmail() {
         List<Reservation> actual = service.findReservationsByHost("jsisse@gmail.com");
         assertNotNull(actual);
-        assertEquals(1,actual.size());
+        assertEquals(2,actual.size());
     }
     @Test
-    void shouldNotFindByNullHostEmail() throws DataException {
+    void shouldNotFindByNullHostEmail() {
         List<Reservation> actual = service.findReservationsByHost(null);
         assertNull(actual);
-        assertEquals(0,actual.size());
+
 
 
     }
     @Test
     void shouldNotFindByBlankHostEmail() {
         List<Reservation> actual = service.findReservationsByHost("     ");
-        assertEquals(0,actual.size());
+        assertNull(actual);
     }
 
     @Test
@@ -114,13 +113,10 @@ public class ReservationServiceTest {
     }
     @Test
     void shouldNotUpdateNonExisting() throws DataException {
-        List<Reservation> reservations = service.findResById("jsisse@gmail.com",1);
-        int reservationId = 2;
+        List<Reservation> reservations = service.findResById("jsisse@gmail.com",2);
+        int reservationId = 3;
         Reservation reservation = reservations.stream().filter(i -> i.getResId() == reservationId)
                 .findFirst().orElse(null);
-
-        reservation.setCheckIn(LocalDate.of(2024,1,11));
-        reservation.setCheckOut(LocalDate.of(2024,1,20));
 
         Result<Reservation> result = service.update(reservation);
         assertFalse(result.isSuccess());
@@ -129,15 +125,15 @@ public class ReservationServiceTest {
 
     @Test
     void shouldDelete() throws DataException {
-        List<Reservation> reservations = service.findResById("jsisse@gmail.com",1);
-        int reservationId = 1;
+        List<Reservation> reservations = service.findResById("jsisse@gmail.com",2);
+        int reservationId = 2;
         Reservation reservation = reservations.stream().filter(i -> i.getResId() == reservationId)
                 .findFirst().orElse(null);
 
         assert reservation != null;
         Result<Reservation> result = service.delete(reservation);
 
-        assertTrue(result.isSuccess());
+        assertEquals(1,reservations.size());
     }
     @Test
     void shouldNotDeleteFromDatesInPast() throws DataException {
