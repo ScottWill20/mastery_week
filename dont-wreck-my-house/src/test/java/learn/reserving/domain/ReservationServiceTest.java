@@ -42,10 +42,7 @@ public class ReservationServiceTest {
         List<Reservation> actual = service.findReservationsByHost("     ");
         assertEquals(0,actual.size());
     }
-    @Test
-    void shouldNotFindByNullHost() {
 
-    }
     @Test
     void shouldAdd() throws DataException {
         Reservation reservation = new Reservation();

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,6 +49,7 @@ public class ReservationService {
         Host host = hostRepository.findByEmail(hostEmail);
 
         List<Reservation> result = reservationRepository.findReservationsByHost(host);
+
 
         for (Reservation reservation : result) {
             reservation.setHost(hostMap.get(reservation.getHost().getHostId()));

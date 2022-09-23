@@ -38,6 +38,8 @@ public class ReservationRepositoryDouble implements ReservationRepository {
         return reservations.stream()
                 .filter(i -> i.getHost().getHostId().equals(host.getHostId()))
                 .collect(Collectors.toList());
+
+
     }
 
     @Override
